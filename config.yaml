@@ -1,5 +1,5 @@
 main:
-  project_name: exercise_14
+  project_name: song_genre_classification
   experiment_name: dev
   execute_steps:
     - download
@@ -11,7 +11,7 @@ main:
   # This seed will be used to seed the random number generator
   # to ensure repeatibility of the data splits and other
   # pseudo-random operations
-  random_seed: 42
+  random_seed: 12345
 data:
   file_url: "https://github.com/udacity/nd0821-c2-build-model-workflow-exercises/blob/master/lesson-2-data-exploration-and-preparation/exercises/exercise_4/starter/genres_mod.parquet?raw=true"
   reference_dataset: "exercise_14/preprocessed_data.csv:latest"
@@ -19,34 +19,34 @@ data:
   ks_alpha: 0.05
   test_size: 0.3
   val_size: 0.3
-  # Stratify according to the target when splitting the data
+  # Stratify according to the target variable when splitting the data
   # in train/test or in train/val
   stratify: genre
 random_forest_pipeline:
   random_forest:
     n_estimators: 100
     criterion: 'gini'
-    max_depth: 13
+    max_depth: 13  # param tuned via [train+val] in previous work
     min_samples_split: 2
     min_samples_leaf: 1
     min_weight_fraction_leaf: 0.0
     max_features: 'auto'
     max_leaf_nodes: null
     min_impurity_decrease: 0.0
-    min_impurity_split: null
+    #min_impurity_split: null   # sklearn forests no longer accepts this param
     bootstrap: true
     oob_score: false
-    n_jobs: null
+    n_jobs: -1
     # This is a different random seed than main.random_seed,
     # because this is used only within the RandomForest
-    random_state: 42
+    random_state: 12345
     verbose: 0
     warm_start: false
     class_weight: "balanced"
     ccp_alpha: 0.0
     max_samples: null
   tfidf:
-    max_features: 10
+    max_features: 10  # param tuned via [train+val] in previous work
   features:
     numerical:
       - "danceability"
