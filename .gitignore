@@ -1,6 +1,12 @@
 # MacOS
 **/.DS_Store
 
+# WandB, MLflow
+**/artifacts/
+**/wandb/
+**/mlruns/
+**/outputs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -57,14 +57,14 @@ def go(config: DictConfig):
             },
         )
 
-    if "segregate" in steps_to_execute:
+    if "split" in steps_to_execute:
         _ = mlflow.run(
-            os.path.join(root_path, "segregate"),
+            os.path.join(root_path, "split"),
             "main",
             parameters={
                 "input_artifact": "preprocessed_data.csv:latest",
                 "artifact_root": "data",
-                "artifact_type": "segregated_data",
+                "artifact_type": "split_data",
                 "test_size": config["data"]["test_size"],
                 "stratify": config["data"]["stratify"],
             },
@@ -81,7 +81,7 @@ def go(config: DictConfig):
             os.path.join(root_path, "random_forest"),
             "main",
             parameters={
-                "train_data": "data_train.csv:latest",
+                "train_data": "preprocessed_data.csv:latest",
                 "model_config": model_config,
                 "export_artifact": config["random_forest_pipeline"]["export_artifact"],
                 "random_seed": config["main"]["random_seed"],
@@ -97,6 +97,7 @@ def go(config: DictConfig):
             parameters={
                 "model_export": f"{config['random_forest_pipeline']['export_artifact']}:latest",
                 "test_data": "data_test.csv:latest",
+                # "test_data": config["data"]["test_dataset"],
             },
         )
 

@@ -13,7 +13,10 @@ from mlflow.models import infer_signature
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import roc_auc_score, plot_confusion_matrix
+from sklearn.metrics import (
+    roc_auc_score,
+    ConfusionMatrixDisplay,
+)  # , plot_confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder, StandardScaler, FunctionTransformer
 import matplotlib.pyplot as plt
@@ -26,7 +29,6 @@ logger = logging.getLogger()
 
 
 def go(args):
-
     run = wandb.init(job_type="train")
 
     logger.info("Downloading and reading train artifact")
@@ -65,21 +67,30 @@ def go(args):
 
     # Export if required
     if args.export_artifact != "null":
-
         export_model(run, pipe, used_columns, X_val, pred, args.export_artifact)
 
     # Some useful plots
     fig_feat_imp = plot_feature_importance(pipe)
 
     fig_cm, sub_cm = plt.subplots(figsize=(10, 10))
-    plot_confusion_matrix(
-        pipe,
-        X_val[used_columns],
-        y_val,
+    # plot_confusion_matrix(
+    #    pipe,
+    #    X_val[used_columns],
+    #    y_val,
+    #    ax=sub_cm,
+    #    normalize="true",
+    #    values_format=".1f",
+    #    xticks_rotation=90,
+    # )
+
+    ConfusionMatrixDisplay.from_estimator(
+        estimator=pipe,
+        X=X_val[used_columns],
+        y=y_val,
         ax=sub_cm,
         normalize="true",
         values_format=".1f",
-        xticks_rotation=90,
+        xticks_rotation=90.0,
     )
     fig_cm.tight_layout()
 
@@ -92,14 +103,12 @@ def go(args):
 
 
 def export_model(run, pipe, used_columns, X_val, val_pred, export_artifact):
-
     # Infer the signature of the model
 
     # Get the columns that we are really using from the pipeline
     signature = infer_signature(X_val[used_columns], val_pred)
 
     with tempfile.TemporaryDirectory() as temp_dir:
-
         export_path = os.path.join(temp_dir, "model_export")
 
         mlflow.sklearn.save_model(
@@ -125,7 +134,6 @@ def export_model(run, pipe, used_columns, X_val, val_pred, export_artifact):
 
 
 def plot_feature_importance(pipe):
-
     # We collect the feature importance for all non-nlp features first
     feat_names = np.array(
         pipe["preprocessor"].transformers[0][-1]
@@ -147,7 +155,6 @@ def plot_feature_importance(pipe):
 
 
 def get_training_inference_pipeline(args):
-
     # Get the configuration for the pipeline
     with open(args.model_config) as fp:
         model_config = yaml.safe_load(fp)
@@ -193,7 +200,9 @@ def get_training_inference_pipeline(args):
     )
 
     # Get a list of the columns we used
-    used_columns = list(itertools.chain.from_iterable([x[2] for x in preprocessor.transformers]))
+    used_columns = list(
+        itertools.chain.from_iterable([x[2] for x in preprocessor.transformers])
+    )
 
     # Append classifier to preprocessing pipeline.
     # Now we have a full prediction pipeline.
@@ -239,7 +248,7 @@ if __name__ == "__main__":
         type=int,
         help="Seed for the random number generator.",
         required=False,
-        default=42
+        default=42,
     )
 
     parser.add_argument(
@@ -247,7 +256,7 @@ if __name__ == "__main__":
         type=float,
         help="Size for the validation set as a fraction of the training set",
         required=False,
-        default=0.3
+        default=0.3,
     )
 
     parser.add_argument(

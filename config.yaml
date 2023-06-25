@@ -5,7 +5,7 @@ main:
     - download
     - preprocess
     - check_data
-    - segregate
+    - split
     - random_forest
     - evaluate
   # This seed will be used to seed the random number generator
@@ -14,7 +14,8 @@ main:
   random_seed: 12345
 data:
   file_url: "https://github.com/udacity/nd0821-c2-build-model-workflow-exercises/blob/master/lesson-2-data-exploration-and-preparation/exercises/exercise_4/starter/genres_mod.parquet?raw=true"
-  reference_dataset: "exercise_14/preprocessed_data.csv:latest"
+  reference_dataset: "exercise_5/preprocessed_data.csv:latest"
+  test_dataset: "exercise_6/data_test.csv:latest"
   # Threshold for Kolomorov-Smirnov test
   ks_alpha: 0.05
   test_size: 0.3
