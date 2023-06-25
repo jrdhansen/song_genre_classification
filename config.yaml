@@ -13,7 +13,8 @@ main:
   # pseudo-random operations
   random_seed: 12345
 data:
-  file_url: "https://github.com/udacity/nd0821-c2-build-model-workflow-exercises/blob/master/lesson-2-data-exploration-and-preparation/exercises/exercise_4/starter/genres_mod.parquet?raw=true"
+  #file_url: "https://github.com/udacity/nd0821-c2-build-model-workflow-exercises/blob/master/lesson-2-data-exploration-and-preparation/exercises/exercise_4/starter/genres_mod.parquet?raw=true"
+  file_url: "https://github.com/jrdhansen/song_genre_classification/blob/main/orig_data/genres_mod.parquet?raw=true"
   reference_dataset: "exercise_5/preprocessed_data.csv:latest"
   test_dataset: "exercise_6/data_test.csv:latest"
   # Threshold for Kolomorov-Smirnov test
