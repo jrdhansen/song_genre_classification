@@ -18,6 +18,7 @@ Though developing a predictive model was an objective of this project, the prima
 
 Using these tools allowed for:
 - Versioning data (original, train, validation, test)
+- Controlling environments (via conda and config yaml files)
 - Versioning other model artifacts (trained models, sklearn pipelines)
 - Versioning results (AUC scores, confusion matrices)
 - Tracking experiments (logging, results, artifacts, data, etc. all tied to a single run)
